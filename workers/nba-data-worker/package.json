@@ -1,0 +1,24 @@
+{
+  "name": "beyondmarket-nba-data-worker",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "wrangler dev",
+    "build": "tsc --noEmit",
+    "deploy": "wrangler deploy",
+    "db:migrate": "wrangler d1 migrations apply beyondmarket_nba --remote",
+    "db:migrate:local": "wrangler d1 migrations apply beyondmarket_nba --local",
+"typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:espn": "vitest run src/espn.validate.test.ts"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20241127.0",
+    "typescript": "^5.3.3",
+    "vitest": "^2.1.0",
+    "wrangler": "^4.63.0"
+  },
+  "dependencies": {
+    "itty-router": "^4.0.14"
+  }
+}

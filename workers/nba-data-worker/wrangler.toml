@@ -1,0 +1,33 @@
+# NBA Live Data Platform (D1) - nba-data-worker
+name = "nba-data-worker"
+main = "src/index.ts"
+compatibility_date = "2024-11-01"
+# Required when multiple Cloudflare accounts exist; use the account that owns this worker and D1.
+account_id = "017eb018faaa796b5f2e91539d09007c"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "beyondmarket_nba"
+database_id = "8908580f-b915-40fd-930d-65fb33268629"
+
+# CHANGED: Durable Object for real-time ESPN polling per gameId.
+[[durable_objects.bindings]]
+name = "RT"
+class_name = "GameRealtimeDO"
+
+[[migrations]]
+tag = "v1"
+new_classes = ["GameRealtimeDO"]
+
+# Cron uses DB lock (refresh_state.lock_until / lock_token). KV not required.
+
+[vars]
+ADMIN_KEY = "change-me-in-production"
+ESPN_BASE_URL = "https://site.api.espn.com/apis/site/v2/sports/basketball/nba"
+RT_POLL_MS = "5000"
+RT_STREAM_TOKEN = "change-me"
+
+[triggers]
+# NOTE: Cloudflare cron minimum is 1 minute. Use 1m as high-frequency tier instead of 15s.
+# Four tiers: 1m (live check), 2m (fallback), 6h (rosters), 24h (stats + cleanup)
+crons = ["*/1 * * * *", "*/2 * * * *", "0 */6 * * *", "0 0 * * *"]

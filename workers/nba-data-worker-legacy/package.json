@@ -1,0 +1,21 @@
+{
+  "name": "nba-data-worker-legacy",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Legacy worker — DO NOT DEPLOY. Production worker is workers/nba-data-worker.",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "node -e \"if (!process.env.ALLOW_LEGACY_DEPLOY) { console.error('\\nDO NOT DEPLOY: This is the legacy worker. Set ALLOW_LEGACY_DEPLOY=1 to deploy.\\n'); process.exit(1); }\" && wrangler deploy",
+    "db:create": "wrangler d1 execute court-intel-db --remote --file=./src/db/schema.sql",
+    "db:create:local": "wrangler d1 execute court-intel-db --local --file=./src/db/schema.sql",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20241127.0",
+    "typescript": "^5.3.3",
+    "wrangler": "^3.78.0"
+  },
+  "dependencies": {
+    "itty-router": "^4.0.14"
+  }
+}

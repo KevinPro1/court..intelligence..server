@@ -1,0 +1,33 @@
+# LEGACY worker — DO NOT DEPLOY. See README in this directory.
+# Production worker: workers/nba-data-worker
+name = "nba-data-worker-legacy"
+main = "src/index.ts"
+compatibility_date = "2024-11-01"
+
+# D1 database for persistence
+[[d1_databases]]
+binding = "DB"
+database_name = "court-intel-db"
+database_id = "8908580f-b915-40fd-930d-65fb33268629"  # Create via: wrangler d1 create court-intel-db
+
+# KV namespace for fast reads and rate-limit state
+[[kv_namespaces]]
+binding = "KV"
+id = "YOUR_KV_NAMESPACE_ID"  # Create via: wrangler kv:namespace create "COURT_INTEL_KV"
+
+# Optional: preview KV for local dev
+# [[kv_namespaces]]
+# binding = "KV"
+# id = "YOUR_PREVIEW_KV_ID"
+# preview = true
+
+[vars]
+# Optional: set TZ for cron (e.g. America/New_York for 6am ET)
+TZ = "America/New_York"
+
+# Cron triggers
+[triggers]
+# Every 15 minutes: sync today's scoreboard and persist games
+crons = ["*/15 * * * *", "0 11 * * *"]
+# */15 * * * * = every 15 min
+# 0 11 * * *  = daily at 11:00 UTC (6am ET in winter, 7am ET in summer; adjust as needed)
